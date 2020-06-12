@@ -8,9 +8,7 @@ config = mpi4py.get_config()
 # Detect compile flags and MPI header files
 cmd_compile = " ".join([config["mpicc"], "--showme:compile"])
 out_stream = os.popen(cmd_compile)
-out_compile = out_stream.read().strip()
-
-compile_flags, _ = out_compile.communicate()
+compile_flags = out_stream.read().strip()
 
 # Push all include flags in a list
 include_dirs = [p.decode()[2:] for p in compile_flags.split()]
