@@ -1,5 +1,6 @@
 import pyximport
 import mpi4py
+import os
 
 print("Using XLA-MPI interop")
 # Get mpi compiler
