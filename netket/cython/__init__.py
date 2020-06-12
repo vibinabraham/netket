@@ -1,13 +1,13 @@
 import pyximport
-import subprocess
 import mpi4py
 
 print("Using XLA-MPI interop")
 # Get mpi compiler
 config = mpi4py.get_config()
 # Detect compile flags and MPI header files
-cmd_compile = [config["mpicc"], "--showme:compile"]
-out_compile = subprocess.Popen(cmd_compile, stdout=subprocess.PIPE)
+cmd_compile = " ".join([config["mpicc"], "--showme:compile"])
+out_stream = os.popen(cmd_compile)
+out_compile = out_stream.read().strip()
 
 compile_flags, _ = out_compile.communicate()
 
