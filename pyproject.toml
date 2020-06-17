@@ -19,4 +19,4 @@ exclude = '''
 
 
 [build-system]
-requires = ["setuptools", "wheel", "cython>=0.21", "mpi4py>=3.0.1"]
+requires = ["setuptools>=18.0", "wheel", "cython>=0.21", "mpi4py>=3.0.1"]
