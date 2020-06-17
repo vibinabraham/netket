@@ -11,7 +11,7 @@ out_stream = os.popen(cmd_compile)
 compile_flags = out_stream.read().strip()
 
 # Push all include flags in a list
-include_dirs = [p.decode()[2:] for p in compile_flags.split()]
+include_dirs = [p[2:] for p in compile_flags.split()]
 include_dirs.append(mpi4py.get_include())
 print("End installing")
 
