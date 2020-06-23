@@ -100,7 +100,7 @@ if jax_available:
     from jax import core
     from jax import abstract_arrays
     from jax.lib import xla_client
-    from jax.interpreters import xla
+    from jax.interpreters import xla, ad, batching
 
     _ops = xla_client.ops
 
@@ -110,6 +110,17 @@ if jax_available:
     # This function applies the primitive to a AST
     def sum_inplace_jax_primitive(x):
         return sum_inplace_p.bind(x)
+
+    def sum_inplace_jax_value_and_jvp(in_args, tan_args):
+        (x,) = in_args
+        (x_tan,) = tan_args
+        res = sum_inplace_jax_primitive(x)
+        jvp = x_tan
+        return (res, jvp)
+
+    def sum_inplace_jax_batching(args, batch_axes):
+        res = sum_inplace_p.bind(*args)
+        return res, batch_axes[0]
 
     #  this function executes the primitive, when not under any transformation
     sum_inplace_p.def_impl(sum_inplace_jax)
@@ -162,6 +173,8 @@ if jax_available:
 
     # assign to the primitive the correct encoder
     xla.backend_specific_translations["cpu"][sum_inplace_p] = sum_inplace_xla_encode
+    ad.primitive_jvps[sum_inplace_p] = sum_inplace_jax_value_and_jvp
+    batching.primitive_batchers[sum_inplace_p] = sum_inplace_jax_batching
 
     @sum_inplace.register(jax.interpreters.partial_eval.JaxprTracer)
     @sum_inplace.register(jax.interpreters.ad.JVPTracer)
